@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+
+<title>b8: statistical discussion</title>
+
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+
+<meta name="dc.title" content="b8: statistical discussion" />
+<meta name="dc.creator" content="Tobias Leupold" />
+<meta name="dc.description" content="Statistical discussion of b8's settings" />
+<meta name="dc.publisher" content="Tobias Leupold" />
+<meta name="dc.identifier" content="http://nasauber.de/" scheme="DCTERMS.URI" />
+<meta name="dc.source" content="http://nasauber.de/programme/b8/discussion/" scheme="DCTERMS.URI" />
+<meta name="dc.language" content="en" />
+<meta name="dc.rights" content="Copyright (c) by Tobias Leupold" />
+
+<meta name="keywords" content="b8 settings statistics statistical discussion" />
+
+<style type="text/css">
+
+h1 {
+	margin-top:1.2em;
+	margin-bottom:1em;
+}
+
+h2 {
+	margin-top:1.2em;
+	margin-bottom:1em;
+}
+
+h3 {
+	margin-top:1em;
+	margin-bottom:0.8em;
+}
+
+h4 {
+	margin-top:0.8em;
+	margin-bottom:0.6em;
+}
+
+code {
+	font-size:small;
+	background-color:rgb(240, 245, 245);
+	padding-left:0.3em;
+	padding-right:0.3em;
+	border:solid 1px rgb(150, 150, 150);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div>
+
+<h1>b8: statistical discussion</h1>
+
+<h1>Index</h1>
+
+<div id="index">
+<ol>
+<li><a href="index.html#whythis">Why this?</a></li>
+<li><a href="index.html#wayofproceeding">Way of proceeding</a></li>
+<li><a href="index.html#statisticalanalysis">Statistical analysis</a>
+<ol>
+<li><a href="index.html#sharpratingsvsgaryrobinsonsapproach">"Sharp" ratings vs. Gary Robinson's approach</a>
+<ol>
+<li><a href="index.html#comparationofthesharpratingmethodandthecontiniousrating">Comparation of the "sharp" rating method and the continious rating</a></li>
+<li><a href="index.html#closerinspectiontwosidedwilcoxonranksumtest">Closer inspection: Two-sided Wilcoxon rank sum test</a></li>
+</ol>
+</li>
+<li><a href="index.html#usingaminimumdeviation">Using a minimum deviation</a>
+<ol>
+<li><a href="index.html#resultsusingaminimumdeviationof02">Results using a minimum deviation of 0.2</a></li>
+<li><a href="index.html#resultsusingaminimumdeviationof04">Results using a minimum deviation of 0.4</a></li>
+<li><a href="index.html#visualizationofthedata">Visualization of the data</a>
+<ol>
+<li><a href="index.html#resultsforaminimumdeviationof02">Results for a minimum deviation of 0.2</a></li>
+<li><a href="index.html#resultsforaminimumdeviationof04">Results for a minimum deviation of 0.4</a></li>
+</ol>
+</li>
+<li><a href="index.html#overviewofb8sperformance">Overview of b8's performance</a></li>
+</ol>
+</li>
+<li><a href="index.html#inspectionofthemedianandmeanratings">Inspection of the median and mean ratings</a></li>
+</ol>
+</li>
+<li><a href="index.html#conclusions">Conclusions</a></li>
+</ol>
+</div>
+
+<h1 id="whythis">Why this?</h1>
+
+<p>
+Programming version 0.4 of b8, I decided to make it's probability calculation variable. Because of that, I wondered with which setting one could make b8's performance better. So I started to do some tests to figure out what default values should be set in the config files.<br />
+I'm not a statistician &ndash; so if you know it better, please tell me ;-) Anyway &ndash; if you experience other values to be better as the "best" values I found, please also contact me.
+</p>
+
+<p>
+Here's what I found.
+</p>
+
+<h1 id="wayofproceeding">Way of proceeding</h1>
+
+<p>
+I took the wordlist from the b8 installation of my homepage that has been filled with 103 ham and 266 spam texts resulting in 2523 ham and 5120 spam tokens (sharing 333). Further, I took a corpus of spam and ham texts collected by <a href="http://galafeu.de/">Johannes Rosa</a> with the guestbook of <a href="http://www.abi2002amschiller.de/">http://www.abi2002amschiller.de/</a> added to the ham corpus.
+</p>
+
+<p>
+Those 350 spam and 207 ham texts were rated using the wordlist, being sure that it wasn't built from these texts. In this way, the texts have not been seen by b8, corresponding to real situation.<br />
+As done on my homepage, a spam-cutoff value of 0.7 was set to discriminate "ham" from "spam".
+</p>
+
+<h1 id="statisticalanalysis">Statistical analysis</h1>
+
+<h2 id="sharpratingsvsgaryrobinsonsapproach">"Sharp" ratings vs. Gary Robinson's approach</h2>
+
+<p>
+Paul Graham proposes to do a "sharp" rating in <a href="http://paulgraham.com/better.html">[1]</a>, using 0.9998 or 0.9999 for tokens only seen in spam texts resp. 0.0002 or 0.0001 for only-ham tokens. This has been b8's default behaviour from version 0.2. Anyway, Gary Robinson's calculation method for the single token ratings proposed in <a href="http://radio.weblogs.com/0101454/stories/2002/09/16/spamDetection.html">[2]</a> has been used to rate tokens seen in ham and spam from version 0.1.<br />
+The first thing to figure out was if this was meaningful. As the wordlist just shared a small amount of tokens between ham and spam, one can assume that Robinson's approach has no big impact on the results using the "traditional" sharp rating method to calculate the texts's probabilities.
+</p>
+
+<p>
+First, the whole ham and spam corpus was rated using the wordlist. Then, the false negatives and false positives were counted and the Sensitivity, Specifity, Positive Predictive Value and Negative Predictive Value have been calculated.<br />
+No minimum deviation was set, according to the default values used in b8 so far. Using the "sharp" rating, s was set to 1 and 0.5 was used as the default rating for an unknown token.
+</p>
+
+<h3 id="comparationofthesharpratingmethodandthecontiniousrating">Comparation of the "sharp" rating method and the continious rating</h3>
+
+<table border="1">
+<tr><td colspan="13"><b>Text classifying according to b8's rating</b></td></tr>
+<tr><td></td><td><i>"sharp" rating</i></td><td><i>s=1</i></td><td><i>s=0.9</i></td><td><i>s=0.7</i></td><td><i>s=0.5</i></td><td><i>s=0.3</i></td><td><i>s=0.1</i></td><td><i>s=0.09</i></td><td><i>s=0.07</i></td><td><i>s=0.05</i></td><td><i>s=0.03</i></td><td><i>s=0.01</i></td></tr>
+<tr><td><i>Spam</i></td><td>96.57</td><td colspan="5">99.14</td><td colspan="2">98.57</td><td colspan="4">98.29</td></tr>
+<tr><td><i>False negative</i></td><td>3.43</td><td colspan="5">0.86</td><td colspan="2">1.43</td><td colspan="4">1.71</td></tr>
+<tr><td><i>Ham</i></td><td>100</td><td colspan="5">100</td><td colspan="2">100</td><td colspan="4">100</td></tr>
+<tr><td><i>False positive</i></td><td>0</td><td colspan="5">0</td><td colspan="2">0</td><td colspan="4">0</td></tr>
+<tr><td colspan="13"><b>Cross tabulation of the results</b></td></tr>
+<tr><td></td><td><i>"sharp" rating</i></td><td><i>s=1</i></td><td><i>s=0.9</i></td><td><i>s=0.7</i></td><td><i>s=0.5</i></td><td><i>s=0.3</i></td><td><i>s=0.1</i></td><td><i>s=0.09</i></td><td><i>s=0.07</i></td><td><i>s=0.05</i></td><td><i>s=0.03</i></td><td><i>s=0.01</i></td></tr>
+<tr><td><i>Sensitivity</i></td><td>96.57</td><td colspan="5">99.14</td><td colspan="2">98.57</td><td colspan="4">98.29</td></tr>
+<tr><td><i>Specifity</i></td><td>100</td><td colspan="5">100</td><td colspan="2">100</td><td colspan="4">100</td></tr>
+<tr><td><i>Positive Predictive Value</i></td><td>100</td><td colspan="5">100</td><td colspan="2">100</td><td colspan="4">100</td></tr>
+<tr><td><i>Negative Predictive Value</i></td><td>94.52</td><td colspan="5">98.57</td><td colspan="2">97.64</td><td colspan="4">97.18</td></tr>
+</table>
+
+<p>
+So, Robinson's approach seems to deliver the better results, independent of the value for s. Here's a boxplot of all resulting values for the spam and the ham corpus (click to enlarge):
+</p>
+
+<p>
+<a href="big/sharp_vs_rob_spam.png"><img alt="&quot;Sharp&quot; rating vs. continious rating &ndash; spam corpus" width="375" height="250" src="small/sharp_vs_rob_spam.png" /></a>
+<a href="big/sharp_vs_rob_ham.png"><img alt="&quot;Sharp&quot; rating vs. continious rating &ndash; ham corpus" width="375" height="250"  src="small/sharp_vs_rob_ham.png" /></a>
+</p>
+
+<h3 id="closerinspectiontwosidedwilcoxonranksumtest">Closer inspection: Two-sided Wilcoxon rank sum test</h3>
+
+<p>
+All ratings using the continious calculation and an s value from 1 to 0.03 showed significantly higher ratings for spam than the traditional "sharp" rating method whereas all continious ratings with s values bigger than 0.03 showed no significanty higher ratings for the ham corpus. None of the methods showed a significantly lower rating for ham than another.
+</p>
+
+<p>
+Here we can say that Robinson's approach goes ahead of the method used in b8 up to version 0.3.3, but no significant differences between the continious rating method's results depending from the s value were found. Further tests just using this method showed different behaviour depending on the setting of a minimum deviation anyway.
+</p>
+
+<h2 id="usingaminimumdeviation">Using a minimum deviation</h2>
+
+<h3 id="resultsusingaminimumdeviationof02">Results using a minimum deviation of 0.2</h3>
+
+<p>
+It seems that setting a minimum deviation that a token's rating has to have for the spamminess calculation is meaningful. Setting the minimum deviation to 0.2 even increased the ratio of spam texts detected, with still no false positives:
+</p>
+
+<table border="1">
+<tr><td colspan="12"><b>Text classifying according to b8's rating</b></td></tr>
+<tr><td></td><td><i>s=1</i></td><td><i>s=0.9</i></td><td><i>s=0.7</i></td><td><i>s=0.5</i></td><td><i>s=0.3</i></td><td><i>s=0.1</i></td><td><i>s=0.09</i></td><td><i>s=0.07</i></td><td><i>s=0.05</i></td><td><i>s=0.03</i></td><td><i>s=0.01</i></td></tr>
+<tr><td><i>Spam</i></td><td colspan="3">99.14</td><td>99.43</td><td>99.43</td><td colspan="2">98.86</td><td colspan="3">98.57</td><td>98.29</td></tr>
+<tr><td><i>False negative</i></td><td colspan="3">0.86</td><td>0.57</td><td>0.57</td><td colspan="2">1.14</td><td colspan="3">1.43</td><td>1.71</td></tr>
+<tr><td><i>Ham</i></td><td colspan="3">99.52</td><td>99.52</td><td>100</td><td colspan="2">100</td><td colspan="3">100</td><td>100</td></tr>
+<tr><td><i>False positive</i></td><td colspan="3">0.48</td><td>0.48</td><td>0</td><td colspan="2">0</td><td colspan="3">0</td><td>0</td></tr>
+<tr><td colspan="12"><b>Cross tabulation of the results</b></td></tr>
+<tr><td></td><td><i>s=1</i></td><td><i>s=0.9</i></td><td><i>s=0.7</i></td><td><i>s=0.5</i></td><td><i>s=0.3</i></td><td><i>s=0.1</i></td><td><i>s=0.09</i></td><td><i>s=0.07</i></td><td><i>s=0.05</i></td><td><i>s=0.03</i></td><td><i>s=0.01</i></td></tr>
+<tr><td><i>Sensitivity</i></td><td colspan="3">99.14</td><td>99.43</td><td>99.43</td><td colspan="2">98.86</td><td colspan="3">98.57</td><td>98.29</td></tr>
+<tr><td><i>Specifity</i></td><td colspan="3">99.52</td><td>99.52</td><td>100</td><td colspan="2">100</td><td colspan="3">100</td><td>100</td></tr>
+<tr><td><i>Positive Predictive Value</i></td><td colspan="3">99.71</td><td>99.71</td><td>100</td><td colspan="2">100</td><td colspan="3">100</td><td>100</td></tr>
+<tr><td><i>Negative Predictive Value</i></td><td colspan="3">98.56</td><td>99.04</td><td>99.04</td><td colspan="2">98.1</td><td colspan="3">97.64</td><td>97.18</td></tr>
+</table>
+
+<h3 id="resultsusingaminimumdeviationof04">Results using a minimum deviation of 0.4</h3>
+
+<p>
+Setting the minimum deviation to 0.4, b8's Sensitivity increased even more, but at the cost of false positives in each case (except s=0.3, which should be coincidence very likely). So, I consider setting such a high minimum deviation as not acceptable, as false positives are considerably less tolerable than false negatives.
+</p>
+
+<table border="1">
+<tr><td colspan="12"><b>Text classifying according to b8's rating</b></td></tr>
+<tr><td></td><td><i>s=1</i></td><td><i>s=0.9</i></td><td><i>s=0.7</i></td><td><i>s=0.5</i></td><td><i>s=0.3</i></td><td><i>s=0.1</i></td><td><i>s=0.09</i></td><td><i>s=0.07</i></td><td><i>s=0.05</i></td><td><i>s=0.03</i></td><td><i>s=0.01</i></td></tr>
+<tr><td><i>Spam</i></td><td>99.14</td><td>99.43</td><td colspan="2">99.14</td><td>100</td><td colspan="4">98.57</td><td>98.29</td><td>98</td></tr>
+<tr><td><i>False negative</i></td><td>0.86</td><td>0.57</td><td colspan="2">0.86</td><td>0</td><td colspan="4">1.43</td><td>1.71</td><td>2</td></tr>
+<tr><td><i>Ham</i></td><td>98.07</td><td>97.58</td><td colspan="2">97.58</td><td>98.07</td><td colspan="4">99.52</td>	<td>99.52</td><td>99.52</td></tr>
+<tr><td><i>False positive</i></td><td>1.93</td><td>2.42</td><td colspan="2">2.42</td><td>1.93</td><td colspan="4">0.48</td><td>0.48</td><td>0.48</td></tr>
+<tr><td colspan="12"><b>Cross tabulation of the results</b></td></tr>
+<tr><td></td><td><i>s=1</i></td><td><i>s=0.9</i></td><td><i>s=0.7</i></td><td><i>s=0.5</i></td><td><i>s=0.3</i></td><td><i>s=0.1</i></td><td><i>s=0.09</i></td><td><i>s=0.07</i></td><td><i>s=0.05</i></td><td><i>s=0.03</i></td><td><i>s=0.01</i></td></tr>
+<tr><td><i>Sensitivity</i></td><td>99.14</td><td>99.43</td><td colspan="2">99.14</td><td>100</td><td colspan="4">98.57</td><td>98.29</td><td>98</td></tr>
+<tr><td><i>Specifity</i></td><td>98.07</td><td>97.58</td><td colspan="2">97.58</td><td>98.07</td><td colspan="4">99.52</td><td>99.52</td><td>99.52</td></tr>
+<tr><td><i>Positive Predictive Value</i></td><td>98.86</td><td>98.58</td><td colspan="2">98.58</td><td>98.87</td><td colspan="4">99.71</td><td>99.71</td><td>99.71</td></tr>
+<tr><td><i>Negative Predictive Value</i></td><td>98.54</td><td>99.02</td><td colspan="2">98.54</td><td>100</td><td colspan="4">97.63</td><td>97.17</td><td>96.71</td></tr>
+</table>
+
+<h3 id="visualizationofthedata">Visualization of the data</h3>
+
+<p>
+The below boxplots show the ratings of the spam and the ham corpus at a specific s value dependent of the minimum deviation used.
+</p>
+
+<h4 id="resultsforaminimumdeviationof02">Results for a minimum deviation of 0.2</h4>
+
+<p>
+<a href="big/rating_spam_md02.png"><img alt="Results for a minimum deviation of 0.2 &ndash; spam" width="375" height="250" src="small/rating_spam_md02.png" /></a>
+<a href="big/rating_ham_md02.png"><img alt="Results for a minimum deviation of 0.2 &ndash; ham" width="375" height="250"  src="small/rating_ham_md02.png" /></a>
+</p>
+
+<h4 id="resultsforaminimumdeviationof04">Results for a minimum deviation of 0.4</h4>
+
+<p>
+<a href="big/rating_spam_md04.png"><img alt="Results for a minimum deviation of 0.4 &ndash; spam" width="375" height="250" src="small/rating_spam_md04.png" /></a>
+<a href="big/rating_ham_md04.png"><img alt="Results for a minimum deviation of 0.4 &ndash; ham" width="375" height="250"  src="small/rating_ham_md04.png" /></a>
+</p>
+
+<p>
+The situation is the same as with the ratings where no minimum deviation was used: very small s values (0.03 and 0.01) showed a significantly higher rating for the ham corpus with no significant difference to greater s values in the rating of the spam corpus.<br />
+The minimum deviation 0.4 ratings show a step in ham ratings between s=0.5 and s=0.3 with a quite low median of the ham rating before, but this setting is not acceptable due to the occurence of false positives.
+</p>
+
+<p>
+The ratings using a minimum deviation of 0.4 apparenty produce a tighter box, but no significant differences between the distribution of the ratings using a minimum deviation of 0.4 have been found (probably due to more outliners).
+</p>
+
+<h3 id="overviewofb8sperformance">Overview of b8's performance</h3>
+
+<p>
+The following pictures visualize the rate of correctly rated texts depending on the s value used and the minimum deviation set.
+</p>
+
+<p>
+Comparing b8's performance using a minimum deviation of 0 and 0.2. Both settings show the best performance with a s value of 0.3. Using 0.2 as the minimum deviation increases the identified spam messages with still no false positives.
+</p>
+
+<p>
+<a href="big/performance_md0.png"><img alt="b8 performance overview &ndash; minimum deviation 0" width="300" height="200" src="small/performance_md0.png" /></a>
+<a href="big/performance_md02.png"><img  alt="b8 performance overview &ndash; minimum deviation 0.2" width="300" height="200"  src="small/performance_md02.png" /></a>
+</p>
+
+<p>
+Using the higher 0.4 minimum deviation results in the occurance of false positives independent of the s value but a sensitivity not increased much nevertheless:
+</p>
+
+<p>
+<a href="big/performance_md04.png"><img  alt="b8 performance overview &ndash; minimum deviation 0.4" width="300" height="200" src="small/performance_md04.png" /></a>
+</p>
+
+<h2 id="inspectionofthemedianandmeanratings">Inspection of the median and mean ratings</h2>
+
+<p>
+The following pictures illustrate the median (drawn through) and mean (dashed) ratings of b8 depending on the s and minimum deviation setting, separate for the spam and the ham corpus.
+</p>
+
+<p>
+<a href="big/medmean_spam.png"><img  alt="b8's ratings: median and mean &ndash; spam" width="300" height="250" src="small/medmean_spam.png" /></a>
+<a href="big/medmean_ham.png"><img alt="b8's ratings: median and mean &ndash; ham" width="300" height="250"  src="small/medmean_ham.png" /></a>
+</p>
+
+<p>
+Apart from the step in the ham rating between s=0.5 and s=0.3 using a minimum deviation of 0.4 described above, the ham rating seems to be quite constant with few outliners (as the median and mean values are resemblant) independent of the settings used. So should be b8's performance to identify ham texts.
+</p>
+
+<p>
+The median value of the spam ratings seems to be quite constant with an s value less than 0.5 used. The mean rating has a maximum at 0.3, as assumed. The higher the minimum deviation is set, the higher get the mean values meaning that more outliners are catched.
+</p>
+
+<h1 id="conclusions">Conclusions</h1>
+
+<ul>
+
+<li>
+Gary Robinson's approach to calculate the single probabilities of tokens is significantly better than Paul Graham's "sharp" rating method. It will not be used in b8 any longer.
+</li>
+
+<li>
+A minimum deviation chosen too great results in false positives.
+</li>
+
+<li>
+b8's performance to identify ham texts correctly seems to be quite constant, relatively independent of the settings used with a better rate for values of s of about 1 (and a not too great minimum deviation).
+</li>
+
+<li>
+b8's performance to catch spam texts rises with a minimum deviation that a token's rating has to have to be used with a maximum performance at s values around 0.3 (where the ham ratings are still quite low!).
+</li>
+
+</ul>
+
+<p>
+So, I think not using the "sharp" ratings, setting <code>s</code> to <code>0.3</code> and <code>minDev</code> to <code>0.2</code> will cause quite good results :-) Let me know if you know it better and have a lot of fun using b8!
+</p>
+
+<h1>References</h1>
+
+<div id="references">
+<ol>
+<li><a href="http://paulgraham.com/better.html">Better Bayesian Filtering</a></li>
+<li><a href="http://radio.weblogs.com/0101454/stories/2002/09/16/spamDetection.html">Spam Detection</a></li>
+</ol>
+</div>
+
+<div style="text-align:right;">
+Tobias Leupold (&#116;&#111;&#98;&#105;&#97;&#115;&nbsp;&#46;&nbsp;&#108;&#101;&#117;&#112;&#111;&#108;&#100;&nbsp;&#97;&#116;&nbsp;&#119;&#101;&#98;&nbsp;&#46;&nbsp;&#100;&#101;)<br />
+<a href="http://nasauber.de/">http://nasauber.de/</a>
+</div>
+
+</div>
+
+</body>
+
+</html>
